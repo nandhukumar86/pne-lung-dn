@@ -9,7 +9,7 @@ import * as tf from '@tensorflow/tfjs';
 })
 export class AppComponent {
   title = 'pne-lung-dn';
-  modelUrl = 'https://raw.githubusercontent.com/nandhukumar86/AIML-Practice/master/CNN-Project1/tfmodelCNNP1.json';
+  modelUrl = 'https://raw.githubusercontent.com/nandhukumar86/pne-lung-dn/master/DenseNetModel/model.json';
 
   ipData: any;
   file: any;
