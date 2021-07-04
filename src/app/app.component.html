@@ -1,21 +1,13 @@
 <html>
   <head>
-    
   </head>
   <body>
-    <div class="container">
-      <h2>Pneumonia Lung Detection</h2>
-      <form (ngSubmit)="func(myForm)" #myForm="ngForm">
-        Select the file:
-        <input type="file" name="ipData" id="ipData" value="{{ipData}}" (change)="fileChanged($event)" ngModel>
-        <button type="submit">Predict</button>
-      </form>
-      <div style="margin: 50px;">
-        <img id="img" src="{{url}}" alt="image" height="150" width="150" *ngIf="url!=null">
-      </div>
-      <div style="margin: 50px;" *ngIf="predictedFlower!=null">
-        <h3>Predicted Flower: {{predictedFlower}}</h3>
-      </div>
-    </div>
+    <input type="file" id="selectFile" (change)="ImageSelected($event)">
+
+    <div>Patient ID: {{patientId}}</div>
+    <div>Body Part: {{bodyPart}}</div>
+    <div>Gender: {{gender}}</div>
+    <div>Age:{{age}}</div>
+
   </body>
 </html>

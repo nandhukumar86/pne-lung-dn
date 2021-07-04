@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
 import * as tf from '@tensorflow/tfjs';
+import { rendererTypeName } from '@angular/compiler';
+
+import * as cornerstone from "cornerstone-core";
+import * as dicomParser from "dicom-parser";
+import * as cornerstoneWADOImageLoader from 'cornerstone-wado-image-loader'
+import { toBase64String } from '@angular/compiler/src/output/source_map';
 
 
 @Component({
@@ -10,36 +16,30 @@ import * as tf from '@tensorflow/tfjs';
 export class AppComponent {
   title = 'pne-lung-dn';
   modelUrl = 'https://raw.githubusercontent.com/nandhukumar86/pne-lung-dn/master/DenseNetModel/model.json';
-
-  ipData: any;
-  file: any;
   url: string | ArrayBuffer;
-  image: HTMLImageElement;
+  binarystring: (blob: Blob) => void;
+  patientId: string;
+  bodyPart: string;
+  gender: string;
+  age: string;
 
-  flowers = ['Black-grass','Charlock','Cleavers','Common Chickweed','Common wheat','Fat Hen','Loose Silky-bent','Maize','Scentless Mayweed','Shepherds Purse','Small-flowered Cranesbill','Sugar beet']
-  predictedFlower : string;
-  async func(myForm) {
-    var model = await tf.loadLayersModel(this.modelUrl);
-    var image = document.getElementById("img") as HTMLImageElement;
-    var tensorImage = tf.browser.fromPixels(image).resizeNearestNeighbor([128, 128]).div(tf.scalar(255)).toFloat().expandDims();
-    var output = model.predict(tensorImage) as tf.Tensor;
-    var outputflowerId = this.argMax(output.dataSync());
-    this.predictedFlower = this.flowers[outputflowerId];
+  ngOnInit(): void {
   }
 
-  fileChanged(event) {
-    if (event.target.files && event.target.files[0]) {
-      var reader = new FileReader();
+  ImageSelected(e) {
+    var reader = new FileReader();
+    reader.readAsArrayBuffer(e.target.files[0]);
 
-      reader.readAsDataURL(event.target.files[0]);
+    reader.onload = (event) => {
+      var arrayImage = new Uint8Array(<ArrayBuffer>event.target.result);
+      var dataset = dicomParser.parseDicom(arrayImage);
 
-      reader.onload = (event) => {
-        this.url = event.target.result;
-      }
-    } 
-  }
+      this.patientId = dataset.string('x00100020');
+      this.bodyPart = dataset.string('x00180015');
+      this.gender = dataset.string('x00100040');
+      this.age = dataset.string('x00101010')
 
-  argMax(array) {
-    return [].map.call(array, (x, i) => [x, i]).reduce((r, a) => (a[0] > r[0] ? a : r))[1];
+    }
+
   }
 }
