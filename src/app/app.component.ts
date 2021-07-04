@@ -39,6 +39,9 @@ export class AppComponent {
       this.gender = dataset.string('x00100040');
       this.age = dataset.string('x00101010')
 
+      var pixelDataElement = dataset.elements.x7fe00010;
+      var pixelData = new Uint8Array(dataset.byteArray.buffer, pixelDataElement.dataOffset, pixelDataElement.length);
+
     }
 
   }
